@@ -6,7 +6,7 @@
 /*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 13:20:58 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/17 19:06:10 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/17 19:08:31 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,17 @@ void print_struct(t_data *data)
 // create a mutix inital for them and assigned the id
 int	forks_init(t_data *data)
 {
-	int id;
+	int index;
 
-	id = 0;
+	index = 0;
 	data->forks = malloc(sizeof(t_forks) * data->n_philosophers + 1);
 	if(!data->forks)
 		return (EXIT_FAILURE);
-	while (data->n_philosophers > id)
+	while (data->n_philosophers > index)
 	{
-		data->forks[id].id = id;
-		data->forks[id].m = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
-		id++;
+		data->forks[index].id = index;
+		data->forks[index].m = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+		index++;
 	}
 #ifdef DFA
 	int idx = 0;
