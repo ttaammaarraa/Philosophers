@@ -6,7 +6,7 @@
 /*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 13:20:58 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/21 18:51:41 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/21 19:22:55 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,14 @@ void *test(void *pdata)
 	wait_thread(philo);
 	printf("\nphilo id %li\n", philo->idthread);
 	return (NULL);
+}
+
+long long get_time(void)
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
 int	create_philo_thread(t_data *data)

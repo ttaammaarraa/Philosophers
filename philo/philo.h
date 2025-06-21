@@ -7,6 +7,8 @@
 #include<limits.h>
 #include <string.h>
 #include <pthread.h>
+#include <sys/time.h>
+
 //number_of_philosophers time_to_die time_to_eat time_to_sleep number_of_times_each_philosopher_must_eat
 typedef struct s_forks t_forks;
 typedef struct s_philo t_philo;
