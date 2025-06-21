@@ -6,72 +6,95 @@
 /*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 13:20:58 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/17 19:08:31 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/21 18:51:41 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	init_data(t_data *data, int argc, char **argv)
-{
-	if (argc < 5 || argc > 6)
-		return (EXIT_FAILURE);
-	data->n_philosophers = ft_atoi(argv[1]);
-	data->ttd = ft_atoi(argv[2]);
-	data->tte = ft_atoi(argv[3]);
-	data->tts = ft_atoi(argv[4]);
-	if (argc == 6)
-		data->n_times_eat = ft_atoi(argv[5]);
-	else
-		data->n_times_eat = -1;
-	if (data->n_philosophers <= 0 || data->ttd <= 0 || data->tte <= 0 || data->tts <= 0)
-		return (EXIT_FAILURE);
-	data->print = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
-	data->state = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
-	return (EXIT_SUCCESS);
-}
 
 void print_struct(t_data *data)
 {
 	printf("n_p: %i\nttd: %i\ntte: %i\ntts: %i\nmte: %i",
 	data->n_philosophers, data->ttd, data->tte, data->tts, data->n_times_eat);
 }
-// create an array of structs
-// each struct must be represent by id (philosophers number - 1)
-// create a mutix inital for them and assigned the id
-int	forks_init(t_data *data)
+void wait_thread(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->state);
+	while(!philo->data->all_ready)
+	{
+		pthread_mutex_unlock(&philo->data->state);
+		usleep(100);
+		pthread_mutex_lock(&philo->data->state);
+	}
+	pthread_mutex_unlock(&philo->data->state);
+}
+void *test(void *pdata)
+{
+	t_philo *philo = (t_philo*)pdata;
+	wait_thread(philo);
+	printf("\nphilo id %li\n", philo->idthread);
+	return (NULL);
+}
+
+int	create_philo_thread(t_data *data)
 {
 	int index;
 
 	index = 0;
-	data->forks = malloc(sizeof(t_forks) * data->n_philosophers + 1);
-	if(!data->forks)
-		return (EXIT_FAILURE);
 	while (data->n_philosophers > index)
 	{
-		data->forks[index].id = index;
-		data->forks[index].m = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+		if(pthread_create(&data->philo[index].idthread, NULL, test, &data->philo[index]) != 0)
+			return (EXIT_FAILURE);
 		index++;
 	}
-#ifdef DFA
-	int idx = 0;
-	while(data->n_philosophers > idx)
-	{
-		printf("the fork id is %i\n", data->forks[idx].id);
-		idx++;
-	}
-#endif
 	return (EXIT_SUCCESS);
+}
+
+int create_monitor_thread(t_data *data)
+{
+	// if(pthread_create(&data->mid, NULL, test, data) != 0)
+	// 	return (EXIT_FAILURE);
+	return(EXIT_SUCCESS);
+}
+
+int create_thread(t_data *data)
+{
+	int index;
+
+	index = 0;
+	if((create_philo_thread(data) || create_monitor_thread(data)) != 0)
+	{
+		printf("Error\n");
+		return (EXIT_FAILURE);
+	}
+	pthread_mutex_lock(&data->state);
+	data->all_ready = 1;
+	pthread_mutex_unlock(&data->state);
+	while (data->n_philosophers > index)
+	{
+		pthread_join(data->philo[index].idthread, NULL);
+		index++;
+	}
+	if(pthread_join(data->mid, NULL) != 0)
+		return(EXIT_FAILURE);
+	return (EXIT_SUCCESS);
+	
 }
 
 int	main(int argc, char **argv)
 {
 	t_data	data;
 	memset(&data, 0, sizeof(t_data));
-	if(init_data(&data, argc, argv) || forks_init(&data))
+	if(init_data(&data, argc, argv) || forks_init(&data) || philo_init(&data))
 	{
 		printf("Error\n");
+		clean_up(&data);
 		return (EXIT_FAILURE);
+	}
+	if(!create_thread(&data))
+	{
+		clean_up(&data);
+		return(EXIT_FAILURE);
 	}
 #ifdef DS
 	print_struct(&data);

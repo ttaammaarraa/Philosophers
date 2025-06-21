@@ -8,25 +8,45 @@
 #include <string.h>
 #include <pthread.h>
 //number_of_philosophers time_to_die time_to_eat time_to_sleep number_of_times_each_philosopher_must_eat
-typedef struct forks t_forks;
+typedef struct s_forks t_forks;
+typedef struct s_philo t_philo;
 typedef struct s_data
 {
     int n_philosophers;
 	int	ttd;
 	int	tte;
 	int	tts;
+	pthread_t mid;
 	int	n_times_eat;
+	int	all_ready;
 	t_forks* forks;
+	t_philo *philo;
 	pthread_mutex_t print;
 	pthread_mutex_t state;
 }	t_data;
 
-typedef struct forks
+typedef struct s_forks
 {
 	pthread_mutex_t m;
 	int	id;
 } t_forks;
 
-int	ft_atoi(const char *str);
+typedef struct s_philo
+{
+	int	id;
+	int	meals;
+	long long	last_meal_time;
+	int eating;
+	t_forks	*r_fork;
+	t_forks *l_fork;
+	pthread_mutex_t mmutex;
+	pthread_t idthread;
+	t_data *data;
+}	t_philo;
 
+int		ft_atoi(const char *str);
+int		forks_init(t_data *data);
+int		philo_init(t_data *data);
+void	clean_up(t_data *data);
+int		init_data(t_data *data, int argc, char **argv);
 #endif

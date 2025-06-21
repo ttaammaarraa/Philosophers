@@ -6,11 +6,11 @@
 /*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 13:21:28 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/17 13:47:47 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/20 18:29:21 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <limits.h>
+#include "philo.h"
 
 int	ft_atoi(const char *str)
 {
@@ -36,3 +36,12 @@ int	ft_atoi(const char *str)
 		return (-1);
 	return (result);
 }
+
+void	clean_up(t_data *data)
+{
+	if(data->philo)
+		free(data->philo);
+	if(data->forks)
+		free(data->forks);
+}
+
