@@ -6,7 +6,7 @@
 /*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 13:20:58 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/21 19:22:55 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/21 19:37:44 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,39 @@ long long get_time(void)
 
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+
+void philo_init_state(t_philo *philo)
+{
+	wait_thread(philo);
+	if(philo->id % 2 == 0)
+		usleep(1000);
+	pthread_mutex_lock(&philo->meals);
+	philo->last_meal_time = get_time();
+	pthread_mutex_unlock(&philo->meals);
+}
+
+// data->stop_simulation
+int is_stopped(t_philo *philo)
+{
+	int stop;
+
+	stop = 0;
+	pthread_mutex_lock(&philo->data->state);
+	stop = philo->data->stop_simulation;
+	pthread_mutex_unlock(&philo->data->state);
+	return (stop);
+}
+
+int is_enough(t_philo *philo)
+{
+	int enough;
+
+	enough = 0;
+	pthread_mutex_lock(&philo->mmutex);
+	enough = (philo->eating >= philo->data->n_times_eat);
+	pthread_mutex_unlock(&philo->mmutex);
+	return (enough);
 }
 
 int	create_philo_thread(t_data *data)

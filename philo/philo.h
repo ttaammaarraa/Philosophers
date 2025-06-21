@@ -25,6 +25,7 @@ typedef struct s_data
 	t_philo *philo;
 	pthread_mutex_t print;
 	pthread_mutex_t state;
+	int stop_simulation;
 }	t_data;
 
 typedef struct s_forks
