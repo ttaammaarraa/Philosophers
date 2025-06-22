@@ -23,6 +23,7 @@ typedef struct s_data
 	int	all_ready;
 	t_forks* forks;
 	t_philo *philo;
+	long long start_time;
 	pthread_mutex_t print;
 	pthread_mutex_t state;
 	int stop_simulation;
@@ -47,9 +48,22 @@ typedef struct s_philo
 	t_data *data;
 }	t_philo;
 
-int		ft_atoi(const char *str);
-int		forks_init(t_data *data);
-int		philo_init(t_data *data);
-void	clean_up(t_data *data);
-int		init_data(t_data *data, int argc, char **argv);
+int			ft_atoi(const char *str);
+int			forks_init(t_data *data);
+int			philo_init(t_data *data);
+void		clean_up(t_data *data);
+int			init_data(t_data *data, int argc, char **argv);
+int			is_stopped(t_philo *philo);
+void		mili_sleep(long long time);
+int			inter_mili_sleep(t_philo *philo, long long time);
+long long	get_time(void);
+void 		print_status(t_philo *philo, char *status);
+void    	setup_forks(t_philo *philo, t_forks **first,t_forks **secound);
+int 		aquire_forks(t_philo *philo, t_forks *first, t_forks *secound);
+void    	meal_status(t_philo *philo, int flag);
+int 		eating_rot(t_philo *philo);
+int 		sleeping_rot(t_philo *philo);
+int 		thinking_rot(t_philo *philo);
+void 		*philo_rot(void *arg);
+
 #endif

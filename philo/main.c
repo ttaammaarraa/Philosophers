@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: taabu-fe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 13:20:58 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/21 19:37:44 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/22 16:00:39 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,6 @@ void *test(void *pdata)
 	return (NULL);
 }
 
-long long get_time(void)
-{
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
-}
-
 void philo_init_state(t_philo *philo)
 {
 	wait_thread(philo);
@@ -52,18 +44,6 @@ void philo_init_state(t_philo *philo)
 	pthread_mutex_lock(&philo->meals);
 	philo->last_meal_time = get_time();
 	pthread_mutex_unlock(&philo->meals);
-}
-
-// data->stop_simulation
-int is_stopped(t_philo *philo)
-{
-	int stop;
-
-	stop = 0;
-	pthread_mutex_lock(&philo->data->state);
-	stop = philo->data->stop_simulation;
-	pthread_mutex_unlock(&philo->data->state);
-	return (stop);
 }
 
 int is_enough(t_philo *philo)
