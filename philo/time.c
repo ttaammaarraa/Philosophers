@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taabu-fe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 15:20:04 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/22 15:21:52 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/23 13:41:57 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	mili_sleep(long long time)
 }
 
 int	inter_mili_sleep(t_philo *philo, long long time)
-{   
+{
 	long long start_time;
 
 	start_time = get_time();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taabu-fe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 13:20:58 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/22 16:00:39 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/23 13:47:40 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void print_struct(t_data *data)
 void wait_thread(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->state);
-	while(!philo->data->all_ready)
+	while(philo->data->all_ready == 0)
 	{
 		pthread_mutex_unlock(&philo->data->state);
 		usleep(100);
@@ -41,9 +41,9 @@ void philo_init_state(t_philo *philo)
 	wait_thread(philo);
 	if(philo->id % 2 == 0)
 		usleep(1000);
-	pthread_mutex_lock(&philo->meals);
+	pthread_mutex_lock(&philo->mmutex);
 	philo->last_meal_time = get_time();
-	pthread_mutex_unlock(&philo->meals);
+	pthread_mutex_unlock(&philo->mmutex);
 }
 
 int is_enough(t_philo *philo)
@@ -52,7 +52,8 @@ int is_enough(t_philo *philo)
 
 	enough = 0;
 	pthread_mutex_lock(&philo->mmutex);
-	enough = (philo->eating >= philo->data->n_times_eat);
+	if (philo->data->n_times_eat != -1)
+		enough = (philo->meals >= philo->data->n_times_eat);
 	pthread_mutex_unlock(&philo->mmutex);
 	return (enough);
 }
@@ -64,7 +65,7 @@ int	create_philo_thread(t_data *data)
 	index = 0;
 	while (data->n_philosophers > index)
 	{
-		if(pthread_create(&data->philo[index].idthread, NULL, test, &data->philo[index]) != 0)
+		if(pthread_create(&data->philo[index].idthread, NULL, philo_rot, &data->philo[index]) != 0)
 			return (EXIT_FAILURE);
 		index++;
 	}
@@ -73,8 +74,8 @@ int	create_philo_thread(t_data *data)
 
 int create_monitor_thread(t_data *data)
 {
-	// if(pthread_create(&data->mid, NULL, test, data) != 0)
-	// 	return (EXIT_FAILURE);
+	if(pthread_create(&data->mid, NULL, monitor, data) != 0)
+		return (EXIT_FAILURE);
 	return(EXIT_SUCCESS);
 }
 
@@ -83,6 +84,7 @@ int create_thread(t_data *data)
 	int index;
 
 	index = 0;
+	data->start_time = get_time();
 	if((create_philo_thread(data) || create_monitor_thread(data)) != 0)
 	{
 		printf("Error\n");
@@ -99,7 +101,7 @@ int create_thread(t_data *data)
 	if(pthread_join(data->mid, NULL) != 0)
 		return(EXIT_FAILURE);
 	return (EXIT_SUCCESS);
-	
+
 }
 
 int	main(int argc, char **argv)
@@ -112,11 +114,12 @@ int	main(int argc, char **argv)
 		clean_up(&data);
 		return (EXIT_FAILURE);
 	}
-	if(!create_thread(&data))
+	if(create_thread(&data))
 	{
 		clean_up(&data);
 		return(EXIT_FAILURE);
 	}
+	clean_up(&data);
 #ifdef DS
 	print_struct(&data);
 #endif

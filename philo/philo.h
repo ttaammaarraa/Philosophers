@@ -65,5 +65,8 @@ int 		eating_rot(t_philo *philo);
 int 		sleeping_rot(t_philo *philo);
 int 		thinking_rot(t_philo *philo);
 void 		*philo_rot(void *arg);
-
+void		 philo_init_state(t_philo *philo);
+void		wait_thread(t_philo *philo);
+int 		is_enough(t_philo *philo);
+void		*monitor(void *arg);
 #endif

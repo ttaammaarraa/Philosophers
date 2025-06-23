@@ -1,11 +1,11 @@
 NAME = philo
 CC = cc
 CFLAGS = -pthread -g
-SRC = main.c init.c utils.c
+SRC = init.c  main.c  routine.c  time.c  utils.c
 OBJS = $(SRC:.c=.o)
 all: $(NAME)
 $(NAME): $(OBJS)
-		$(CC) $(CFLAGS) -o $(NAME) $(OBJS) 
+		$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
 clean:
 		rm -f $(OBJS)
 fclean:	clean
