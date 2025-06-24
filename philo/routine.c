@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taabu-fe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 16:00:12 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/24 10:51:10 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/24 11:10:21 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,17 @@ void	setup_forks(t_philo *philo, t_forks **first, t_forks **second)
 	}
 }
 
+int	handle_single_philo(t_philo *philo, t_forks *first_fork)
+{
+	if(philo->data->n_philosophers == 1)
+	{
+		pthread_mutex_unlock(&first_fork->m);
+		mili_sleep(philo->data->ttd);
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}
+
 int	acquire_forks(t_philo *philo, t_forks *first, t_forks *second)
 {
 	pthread_mutex_lock(&first->m);
@@ -48,6 +59,8 @@ int	acquire_forks(t_philo *philo, t_forks *first, t_forks *second)
 		return (EXIT_FAILURE);
 	}
 	print_status(philo, "has taken a fork");
+	if(handle_single_philo(philo, first) == EXIT_FAILURE)
+		return (EXIT_FAILURE);
 	pthread_mutex_lock(&second->m);
 	if (is_stopped(philo))
 	{
@@ -124,36 +137,12 @@ int	thinking_rot(t_philo *philo)
 	return (EXIT_SUCCESS);
 }
 
-void	one_philo_rot(t_philo *philo)
-{
-	print_status(philo, "has taken a fork");
-	inter_mili_sleep(philo, philo->data->ttd);
-	pthread_mutex_lock(&philo->data->print);
-	pthread_mutex_lock(&philo->data->state);
-	if (!philo->data->stop_simulation)
-	{
-		/*         print_status(philo, "died");
-				philo->data->stop_simulation = 1;
-		*/
-		printf("%lld %i died\n", get_time() - philo->data->start_time,
-			philo->id);
-		philo->data->stop_simulation = 1;
-	}
-	pthread_mutex_unlock(&philo->data->state);
-	pthread_mutex_unlock(&philo->data->print);
-}
-
 void	*philo_rot(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
 	philo_init_state(philo);
-	if (philo->data->n_philosophers == 1)
-	{
-		one_philo_rot(philo);
-		return (NULL);
-	}
 	while (1)
 	{
 		if (is_stopped(philo))
