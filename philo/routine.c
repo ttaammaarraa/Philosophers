@@ -6,7 +6,7 @@
 /*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 16:00:12 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/24 11:10:21 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/24 11:13:02 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,6 @@ int	check_dead(t_philo *philo)
 
 	pthread_mutex_lock(&philo->mmutex);
 	current_time = get_time();
-	// Check if time since last meal exceeds time to die
 	if ((current_time - philo->last_meal_time) >= philo->data->ttd)
 	{
 		pthread_mutex_unlock(&philo->mmutex);

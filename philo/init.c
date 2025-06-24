@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: taabu-fe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 18:25:52 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/24 01:30:36 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/24 11:13:18 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,6 @@ int	init_data(t_data *data, int argc, char **argv)
 	return (EXIT_SUCCESS);
 }
 
-// create an array of structs
-// each struct must be represent by id (philosophers number - 1)
-// create a mutix inital for them and assigned the id
 int	forks_init(t_data *data)
 {
 	int	index;
