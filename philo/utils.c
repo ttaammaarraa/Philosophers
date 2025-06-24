@@ -40,8 +40,8 @@ int	ft_atoi(const char *str)
 
 void	clean_up(t_data *data)
 {
-	if(data->philo)
+	if (data->philo)
 		free(data->philo);
-	if(data->forks)
+	if (data->forks)
 		free(data->forks);
 }

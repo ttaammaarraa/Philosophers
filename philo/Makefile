@@ -1,6 +1,6 @@
 NAME = philo
 CC = cc
-CFLAGS = -pthread -g
+CFLAGS = -Wall -Wextra -Werror -pthread -g
 SRC = init.c  main.c  routine.c  time.c  utils.c
 OBJS = $(SRC:.c=.o)
 all: $(NAME)
