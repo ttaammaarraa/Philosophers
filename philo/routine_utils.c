@@ -15,12 +15,11 @@
 void	print_status(t_philo *philo, char *status)
 {
 	long long	current_time;
-	int		stopped;
+	int			stopped;
 
 	pthread_mutex_lock(&philo->data->state);
 	stopped = philo->data->stop_simulation;
 	pthread_mutex_unlock(&philo->data->state);
-
 	if (!stopped)
 	{
 		pthread_mutex_lock(&philo->data->print);
