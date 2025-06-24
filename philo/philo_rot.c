@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_rot_utils.c                                  :+:      :+:    :+:   */
+/*   philo_rot.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 11:28:35 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/24 11:29:35 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/24 12:14:48 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	thinking_rot(t_philo *philo)
 	}
 	pthread_mutex_unlock(&philo->data->state);
 	print_status(philo, "is thinking");
-	usleep(500);
+	usleep(1000);
 	return (EXIT_SUCCESS);
 }
 

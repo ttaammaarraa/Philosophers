@@ -6,7 +6,7 @@
 /*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 11:25:55 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/24 11:26:30 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/24 11:58:10 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@ int	check_all_ate_enough(t_philo *philos)
 
 	counter = 0;
 	all_ate_enough = 1;
+	pthread_mutex_lock(&philos->data->state);
+	if (philos->data->stop_simulation)
+	{
+		pthread_mutex_unlock(&philos->data->state);
+		return (0);
+	}
+	pthread_mutex_unlock(&philos->data->state);
+
 	while (philos->data->n_philosophers > counter)
 	{
 		if (is_enough(&philos[counter]) == 0)
@@ -34,12 +42,14 @@ int	check_all_ate_enough(t_philo *philos)
 int	check_dead(t_philo *philo)
 {
 	long long	current_time;
+	int		should_die;
 
 	pthread_mutex_lock(&philo->mmutex);
 	current_time = get_time();
-	if ((current_time - philo->last_meal_time) >= philo->data->ttd)
+	should_die = ((current_time - philo->last_meal_time) >= philo->data->ttd);
+
+	if (should_die)
 	{
-		pthread_mutex_unlock(&philo->mmutex);
 		pthread_mutex_lock(&philo->data->print);
 		pthread_mutex_lock(&philo->data->state);
 		if (!philo->data->stop_simulation)
@@ -50,6 +60,7 @@ int	check_dead(t_philo *philo)
 		}
 		pthread_mutex_unlock(&philo->data->state);
 		pthread_mutex_unlock(&philo->data->print);
+		pthread_mutex_unlock(&philo->mmutex);
 		return (EXIT_FAILURE);
 	}
 	pthread_mutex_unlock(&philo->mmutex);

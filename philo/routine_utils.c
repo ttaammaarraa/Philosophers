@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   routine.c                                          :+:      :+:    :+:   */
+/*   routine_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: taabu-fe <taabu-fe@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 16:00:12 by taabu-fe          #+#    #+#             */
-/*   Updated: 2025/06/24 11:29:33 by taabu-fe         ###   ########.fr       */
+/*   Updated: 2025/06/24 12:09:41 by taabu-fe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,24 @@
 void	print_status(t_philo *philo, char *status)
 {
 	long long	current_time;
+	int		stopped;
 
-	pthread_mutex_lock(&philo->data->print);
-	if (!is_stopped(philo))
+	pthread_mutex_lock(&philo->data->state);
+	stopped = philo->data->stop_simulation;
+	pthread_mutex_unlock(&philo->data->state);
+
+	if (!stopped)
 	{
-		current_time = get_time() - philo->data->start_time;
-		printf("%lld %i %s\n", current_time, philo->id, status);
+		pthread_mutex_lock(&philo->data->print);
+		pthread_mutex_lock(&philo->data->state);
+		if (!philo->data->stop_simulation)
+		{
+			current_time = get_time() - philo->data->start_time;
+			printf("%lld %i %s\n", current_time, philo->id, status);
+		}
+		pthread_mutex_unlock(&philo->data->state);
+		pthread_mutex_unlock(&philo->data->print);
 	}
-	pthread_mutex_unlock(&philo->data->print);
 }
 
 void	setup_forks(t_philo *philo, t_forks **first, t_forks **second)
